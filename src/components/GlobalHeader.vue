@@ -19,7 +19,20 @@
     <a-col flex="120px">
       <div class="user-login-status">
         <div v-if="loginUserStore.loginUser.id">
-          {{ loginUserStore.loginUser.userName ?? '无名' }}
+          <a-dropdown>
+            <ASpace>
+              <a-avatar :src="loginUserStore.loginUser.userAvatar" />
+              {{ loginUserStore.loginUser.userName ?? '无名' }}
+            </ASpace>
+            <template #overlay>
+              <a-menu>
+                <a-menu-item @click="doLogout">
+                  <LoginOutlined />
+                  退出登录
+                </a-menu-item>
+              </a-menu>
+            </template>
+          </a-dropdown>
         </div>
         <div v-else>
           <a-button type="primary" href="/user/login">登录</a-button>
@@ -31,10 +44,12 @@
 
 <script lang="ts" setup>
 import { h, ref } from 'vue'
-import { HomeOutlined } from '@ant-design/icons-vue'
-import { MenuProps } from 'ant-design-vue'
+import { HomeOutlined, LoginOutlined } from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
+import type { MenuProps } from 'ant-design-vue'  // 使用 type-only import 导入类型
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
+import { userLogoutUsingPost } from '@/api/userController'
 
 const router = useRouter()
 // 获取登录用户状态
@@ -74,7 +89,28 @@ const items = ref<MenuProps['items']>([
     title: '关于我',
   },
 ])
+
+// 用户注销
+const doLogout = async () => {
+  // 发起请求
+  const res = await userLogoutUsingPost()
+  console.log(res)
+  // 判断是否成功
+  if (res.data.code === 0) {
+    // 成功，重置用户信息
+    loginUserStore.setLoginUser({
+      userName: '未登录',
+    })
+    message.success('退出登录成功')
+    // 跳转登录页
+    await router.push('/user/login')
+  } else {
+    // 失败，打印错误信息
+    message.error('退出登录失败，' + res.data.message)
+  }
+}
 </script>
+
 
 <style scoped>
 .title-bar {
