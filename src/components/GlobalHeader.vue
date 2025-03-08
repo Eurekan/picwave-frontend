@@ -43,8 +43,8 @@
 </template>
 
 <script lang="ts" setup>
-import { h, ref } from 'vue'
-import { HomeOutlined, LoginOutlined } from '@ant-design/icons-vue'
+import { computed, h, ref } from 'vue'
+import { HomeOutlined, LoginOutlined, GithubOutlined, FormOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import type { MenuProps } from 'ant-design-vue'  // 使用 type-only import 导入类型
 import { useRouter } from 'vue-router'
@@ -71,7 +71,11 @@ router.afterEach((to, from, next) => {
   current.value = [to.path]
 })
 
-const items = ref<MenuProps['items']>([
+// 菜单列表
+const items = computed<MenuProps['items']>(() => filterMenus(originItems))
+
+// 菜单路由
+const originItems = [
   {
     key: '/',
     icon: () => h(HomeOutlined),
@@ -79,16 +83,36 @@ const items = ref<MenuProps['items']>([
     title: '主页',
   },
   {
-    key: '/about',
-    label: '关于',
-    title: '关于',
+    key: '/admin/userManage',
+    icon: () => h(FormOutlined),
+    label: '用户管理',
+    title: '用户管理',
   },
   {
     key: 'others',
-    label: h('a', { href: 'https://github.com/Eurekan', target: '_blank' }, '关于我'),
-    title: '关于我',
+    icon: () => h(GithubOutlined),
+    label: h('a', { href: 'https://www.github.com/Eurekan', target: '_blank' }, '关于作者'),
+    title: '关于作者',
   },
-])
+]
+
+// 过滤菜单列表
+const filterMenus = (menus = [] as MenuProps['items']) => {
+  return menus?.filter((menu) => {
+    if (!menu || !menu.key) {
+      return false;
+    }
+    const key = menu.key as string; // 类型断言
+    if (key.startsWith('/admin')) {
+      const loginUser = loginUserStore.loginUser;
+      if (!loginUser || loginUser.userRole !== "admin") {
+        return false;
+      }
+    }
+    return true;
+  });
+};
+
 
 // 用户注销
 const doLogout = async () => {
