@@ -18,7 +18,7 @@
     </div>
 
     <a-form :model="formState" name="userProfileForm" autocomplete="off" @finish="handleSubmit" class="profile-form">
-      <a-form-item label="用户名" name="username" :rules="[{ required: true, message: '请输入用户名' }]">
+      <a-form-item label="用户名" name="username">
         <a-input v-model:value="formState.username" disabled />
       </a-form-item>
 

@@ -22,23 +22,17 @@ import { message } from 'ant-design-vue'
 import { uploadPictureUsingPost } from '@/api/pictureController'
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue'
 
-// 定义父组件传递的属性
+
+// 定义属性
 interface Props {
-  // 已上传图片信息
+  // 图片信息
   picture?: API.PictureVO
-  // 上传成功回调，将新图片信息作为参数传递给父组件
+  // 上传成功回调
   onSuccess?: (newPicture: API.PictureVO) => void
 }
-
-// 获取父组件传递的属性
+// 声明组件属性
 const props = defineProps<Props>()
 
-// 子组件的属性
-const picture = ref<API.PictureVO>()
-// 子组件的上传成功回调
-const onSuccess = (newPicture: API.PictureVO) => {
-  picture.value = newPicture
-}
 
 // 上传状态
 const loading = ref<any>(false)
@@ -86,7 +80,7 @@ const handleUpload = async ({ file }: any) => {
 
 .picture-upload img {
   max-width: 100%;
-  max-height: 240%;
+  max-height: 200px;
 }
 
 .ant-upload-text {
