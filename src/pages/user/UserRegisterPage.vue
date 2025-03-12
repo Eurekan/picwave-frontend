@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue'
-import { userLoginUsingPost, userRegisterUsingPost } from '@/api/userController'
+import { userRegisterUsingPost } from '@/api/userController'
 import { message } from 'ant-design-vue'
 import router from '@/router'
 

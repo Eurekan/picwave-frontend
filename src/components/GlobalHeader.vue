@@ -9,12 +9,7 @@
       </RouterLink>
     </a-col>
     <a-col flex="auto">
-      <a-menu
-        v-model:selectedKeys="current"
-        mode="horizontal"
-        :items="items"
-        @click="doMenuClick"
-      />
+      <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items" @click="doMenuClick" />
     </a-col>
     <a-col flex="120px">
       <div class="user-login-status">
@@ -26,6 +21,10 @@
             </ASpace>
             <template #overlay>
               <a-menu>
+                <a-menu-item @click="doEdit">
+                  <UserOutlined />
+                  个人中心
+                </a-menu-item>
                 <a-menu-item @click="doLogout">
                   <LoginOutlined />
                   退出登录
@@ -44,9 +43,15 @@
 
 <script lang="ts" setup>
 import { computed, h, ref } from 'vue'
-import { HomeOutlined, LoginOutlined, GithubOutlined, FormOutlined } from '@ant-design/icons-vue'
+import {
+  HomeOutlined,
+  LoginOutlined,
+  GithubOutlined,
+  FormOutlined,
+  UserOutlined,
+} from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
-import type { MenuProps } from 'ant-design-vue'  // 使用 type-only import 导入类型
+import type { MenuProps } from 'ant-design-vue' // 使用 type-only import 导入类型
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { userLogoutUsingPost } from '@/api/userController'
@@ -83,6 +88,11 @@ const originItems = [
     title: '主页',
   },
   {
+    key: '/add_picture',
+    label: '创建图片',
+    title: '创建图片',
+  },
+  {
     key: '/admin/userManage',
     icon: () => h(FormOutlined),
     label: '用户管理',
@@ -100,19 +110,18 @@ const originItems = [
 const filterMenus = (menus = [] as MenuProps['items']) => {
   return menus?.filter((menu) => {
     if (!menu || !menu.key) {
-      return false;
+      return false
     }
-    const key = menu.key as string; // 类型断言
+    const key = menu.key as string // 类型断言
     if (key.startsWith('/admin')) {
-      const loginUser = loginUserStore.loginUser;
-      if (!loginUser || loginUser.userRole !== "admin") {
-        return false;
+      const loginUser = loginUserStore.loginUser
+      if (!loginUser || loginUser.userRole !== 'admin') {
+        return false
       }
     }
-    return true;
-  });
-};
-
+    return true
+  })
+}
 
 // 用户注销
 const doLogout = async () => {
@@ -133,8 +142,12 @@ const doLogout = async () => {
     message.error('退出登录失败，' + res.data.message)
   }
 }
-</script>
 
+// 编辑用户信息
+const doEdit = () => {
+  router.push('/user/profile')
+}
+</script>
 
 <style scoped>
 .title-bar {
