@@ -22,7 +22,6 @@ import { message } from 'ant-design-vue'
 import { uploadPictureUsingPost } from '@/api/pictureController'
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue'
 
-
 // 定义属性
 interface Props {
   // 图片信息
@@ -30,9 +29,9 @@ interface Props {
   // 上传成功回调
   onSuccess?: (newPicture: API.PictureVO) => void
 }
+
 // 声明组件属性
 const props = defineProps<Props>()
-
 
 // 上传状态
 const loading = ref<any>(false)
