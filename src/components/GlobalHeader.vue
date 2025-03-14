@@ -9,7 +9,12 @@
       </RouterLink>
     </a-col>
     <a-col flex="auto">
-      <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items" @click="doMenuClick" />
+      <a-menu
+        v-model:selectedKeys="current"
+        mode="horizontal"
+        :items="items"
+        @click="doMenuClick"
+      />
     </a-col>
     <a-col flex="120px">
       <div class="user-login-status">
@@ -22,7 +27,7 @@
             <template #overlay>
               <a-menu>
                 <a-menu-item @click="doEdit">
-                  <UserOutlined />
+                  <SettingOutlined />
                   个人中心
                 </a-menu-item>
                 <a-menu-item @click="doLogout">
@@ -45,10 +50,12 @@
 import { computed, h, ref } from 'vue'
 import {
   HomeOutlined,
+  TeamOutlined,
+  FormOutlined,
   LoginOutlined,
   GithubOutlined,
-  FormOutlined,
-  UserOutlined,
+  SettingOutlined,
+  FileImageOutlined,
 } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import type { MenuProps } from 'ant-design-vue' // 使用 type-only import 导入类型
@@ -91,12 +98,19 @@ const originItems = [
     key: '/add_picture',
     label: '创建图片',
     title: '创建图片',
+    icon: () => h(FileImageOutlined),
   },
   {
     key: '/admin/userManage',
-    icon: () => h(FormOutlined),
+    icon: () => h(TeamOutlined),
     label: '用户管理',
     title: '用户管理',
+  },
+  {
+    key: '/admin/pictureManage',
+    icon: () => h(FormOutlined),
+    label: '图片管理',
+    title: '图片管理',
   },
   {
     key: 'others',
