@@ -76,4 +76,27 @@ const handleSubmit = async (values: any) => {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+#userRegisterPage {
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.desc {
+  text-align: center;
+  color: #bbb;
+  margin-bottom: 16px;
+}
+
+.tips {
+  margin-bottom: 16px;
+  color: #bbb;
+  font-size: 13px;
+  text-align: right;
+}
+</style>
