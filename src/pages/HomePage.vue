@@ -2,8 +2,13 @@
   <div id="homePage">
     <!-- 搜索框 -->
     <div class="search-bar">
-      <a-input-search v-model:value="searchParams.searchText" placeholder="从海量图片中搜索" enter-button="搜索" size="large"
-        @search="doSearch" />
+      <a-input-search
+        v-model:value="searchParams.searchText"
+        placeholder="从海量图片中搜索"
+        enter-button="搜索"
+        size="large"
+        @search="doSearch"
+      />
     </div>
     <!--  分类选项  -->
     <a-tabs v-model:active-key="selectedCategory" @change="doSearch">
@@ -14,21 +19,34 @@
     <div class="tag-bar">
       <span style="margin-right: 8px">标签：</span>
       <a-space :size="[0, 8]" wrap>
-        <a-checkable-tag v-for="(tag, index) in tagList" :key="tag" v-model:checked="selectedTagList[index]"
-          @change="doSearch">
+        <a-checkable-tag
+          v-for="(tag, index) in tagList"
+          :key="tag"
+          v-model:checked="selectedTagList[index]"
+          @change="doSearch"
+        >
           {{ tag }}
         </a-checkable-tag>
       </a-space>
     </div>
     <!-- 图片列表 -->
-    <a-list :grid="{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 5, xxl: 6 }" :data-source="dataList"
-      :pagination="pagination" :loading="loading">
+    <a-list
+      :grid="{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 5, xxl: 6 }"
+      :data-source="dataList"
+      :pagination="pagination"
+      :loading="loading"
+    >
       <template #renderItem="{ item: picture }">
         <a-list-item style="padding: 0">
           <!-- 图片卡片 -->
           <div class="picture-card" @click="doClickPicture(picture)">
             <div class="picture-container">
-              <img :alt="picture.name" :src="picture.url" />
+              <img
+                style="height: 180px; object-fit: cover"
+                :alt="picture.name"
+                :src="picture.thumbnailUrl ?? picture.url"
+                loading="lazy"
+              />
               <div class="picture-overlay">
                 <div class="picture-info">
                   <h3 class="picture-title">{{ picture.name }}</h3>
