@@ -3,23 +3,22 @@
     <h2 style="margin-bottom: 16px">
       {{ route.query?.id ? '编辑图片' : '创建图片' }}
     </h2>
+    <!-- 空间选择 -->
+    <a-typography-paragraph v-if="spaceId" type="secondary">
+      保存至空间：<a :href="`/space/${spaceId}`" target="_blank">{{ spaceId }}</a>
+    </a-typography-paragraph>
     <!-- 选择上传方式 -->
     <a-tabs v-model:activeKey="uploadType"
-    >>
+      >>
       <a-tab-pane key="file" tab="文件上传">
-        <PictureUpload :picture="picture" :onSuccess="onSuccess" />
+        <PictureUpload :picture="picture" :spaceId="spaceId" :onSuccess="onSuccess" />
       </a-tab-pane>
       <a-tab-pane key="url" tab="URL 上传" force-render>
-        <UrlPictureUpload :picture="picture" :onSuccess="onSuccess" />
+        <UrlPictureUpload :picture="picture" :spaceId="spaceId" :onSuccess="onSuccess" />
       </a-tab-pane>
     </a-tabs>
     <!--  图片信息表单  -->
-    <a-form
-      v-if="picture"
-      layout="vertical"
-      :model="pictureForm"
-      @finish="handleSubmit"
-    >
+    <a-form v-if="picture" layout="vertical" :model="pictureForm" @finish="handleSubmit">
       <a-form-item label="名称" name="name">
         <a-input v-model:value="pictureForm.name" placeholder="请输入名称" />
       </a-form-item>
@@ -59,12 +58,12 @@
 <script setup lang="ts">
 import PictureUpload from '@/components/PictureUpload.vue'
 import UrlPictureUpload from '@/components/UrlPictureUpload.vue'
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import {
   editPictureUsingPost,
   getPictureTagCategoryListUsingGet,
-  getPictureVoByIdUsingGet
+  getPictureVoByIdUsingGet,
 } from '@/api/pictureController'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -76,6 +75,11 @@ const uploadType = ref<'file' | 'url'>('file')
 const picture = ref<API.PictureVO>()
 // 表单信息
 const pictureForm = reactive<API.PictureEditRequest>({})
+
+// 空间 id
+const spaceId = computed(() => {
+  return route.query?.spaceId
+})
 
 /**
  * 图片上传成功
@@ -98,6 +102,7 @@ const handleSubmit = async (values: any) => {
   }
   const res = await editPictureUsingPost({
     id: pictureId,
+    spaceId: spaceId.value,
     ...values,
   })
   if (res.data.code == 0 && res.data.data) {
@@ -146,7 +151,7 @@ const getOldPicture = async () => {
   const id = route.query?.id
   if (id) {
     const res = await getPictureVoByIdUsingGet({
-      id : id,
+      id: id,
     })
     if (res.data.code == 0 && res.data.data) {
       picture.value = res.data.data
@@ -158,7 +163,6 @@ const getOldPicture = async () => {
       message.error('获取图片失败，' + res.data.message)
     }
   }
-
 }
 
 /**

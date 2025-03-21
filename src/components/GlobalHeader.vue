@@ -1,60 +1,70 @@
 <template>
-  <a-row :wrap="false">
-    <a-col flex="200px">
-      <RouterLink to="/">
-        <div class="title-bar">
-          <img class="logo" src="../assets/logo.jpg" alt="logo" />
-          <div class="title">图潮</div>
+  <div id="globalHeader">
+    <a-row :wrap="false">
+      <a-col flex="200px">
+        <RouterLink to="/">
+          <div class="title-bar">
+            <img class="logo" src="../assets/logo.jpg" alt="logo" />
+            <div class="title">图潮</div>
+          </div>
+        </RouterLink>
+      </a-col>
+      <a-col flex="auto">
+        <a-menu
+          v-model:selectedKeys="current"
+          mode="horizontal"
+          :items="items"
+          @click="doMenuClick"
+        />
+      </a-col>
+      <a-col flex="120px">
+        <div class="user-login-status">
+          <div v-if="loginUserStore.loginUser.id">
+            <a-dropdown>
+              <ASpace>
+                <a-avatar :src="loginUserStore.loginUser.userAvatar" />
+                {{ loginUserStore.loginUser.userName ?? '无名' }}
+              </ASpace>
+              <template #overlay>
+                <a-menu>
+                  <a-menu-item>
+                    <router-link to="/my_space">
+                      <UserOutlined />
+                      个人空间
+                    </router-link>
+                  </a-menu-item>
+                  <a-menu-item @click="doEdit">
+                    <SettingOutlined />
+                    个人设置
+                  </a-menu-item>
+                  <a-menu-item @click="doLogout">
+                    <LoginOutlined />
+                    退出登录
+                  </a-menu-item>
+                </a-menu>
+              </template>
+            </a-dropdown>
+          </div>
+          <div v-else>
+            <a-button type="primary" href="/user/login">登录</a-button>
+          </div>
         </div>
-      </RouterLink>
-    </a-col>
-    <a-col flex="auto">
-      <a-menu
-        v-model:selectedKeys="current"
-        mode="horizontal"
-        :items="items"
-        @click="doMenuClick"
-      />
-    </a-col>
-    <a-col flex="120px">
-      <div class="user-login-status">
-        <div v-if="loginUserStore.loginUser.id">
-          <a-dropdown>
-            <ASpace>
-              <a-avatar :src="loginUserStore.loginUser.userAvatar" />
-              {{ loginUserStore.loginUser.userName ?? '无名' }}
-            </ASpace>
-            <template #overlay>
-              <a-menu>
-                <a-menu-item @click="doEdit">
-                  <SettingOutlined />
-                  个人中心
-                </a-menu-item>
-                <a-menu-item @click="doLogout">
-                  <LoginOutlined />
-                  退出登录
-                </a-menu-item>
-              </a-menu>
-            </template>
-          </a-dropdown>
-        </div>
-        <div v-else>
-          <a-button type="primary" href="/user/login">登录</a-button>
-        </div>
-      </div>
-    </a-col>
-  </a-row>
+      </a-col>
+    </a-row>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, h, ref } from 'vue'
 import {
+  UserOutlined,
   HomeOutlined,
   TeamOutlined,
   FormOutlined,
   LoginOutlined,
   GithubOutlined,
   SettingOutlined,
+  PieChartOutlined,
   FileImageOutlined,
 } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
@@ -113,6 +123,12 @@ const originItems = [
     title: '图片管理',
   },
   {
+    key: '/admin/spaceManage',
+    icon: () => h(PieChartOutlined),
+    label: '空间管理',
+    title: '空间管理',
+  },
+  {
     key: 'others',
     icon: () => h(GithubOutlined),
     label: h('a', { href: 'https://www.github.com/Eurekan', target: '_blank' }, '关于作者'),
@@ -164,7 +180,7 @@ const doEdit = () => {
 </script>
 
 <style scoped>
-.title-bar {
+#globalHeader .title-bar {
   display: flex;
   align-items: center;
 }
