@@ -6,9 +6,20 @@
       <a-form :model="formState" layout="vertical" ref="formRef" @finish="handleSubmit">
         <!-- 头像上传 -->
         <div class="avatar-container">
-          <a-upload name="avatar" list-type="picture-circle" class="avatar-uploader" :show-upload-list="false"
-            :before-upload="beforeUpload" :customRequest="handleUpload">
-            <img v-if="formState.userAvatar" :src="formState.userAvatar" alt="头像" class="avatar-image" />
+          <a-upload
+            name="avatar"
+            list-type="picture-circle"
+            class="avatar-uploader"
+            :show-upload-list="false"
+            :before-upload="beforeUpload"
+            :customRequest="handleUpload"
+          >
+            <img
+              v-if="formState.userAvatar"
+              :src="formState.userAvatar"
+              alt="头像"
+              class="avatar-image"
+            />
             <div v-else>
               <loading-outlined v-if="uploading" />
               <plus-outlined v-else />
@@ -23,14 +34,25 @@
         </a-form-item>
 
         <!-- 用户名 -->
-        <a-form-item label="用户名" name="userName" :rules="[{ required: true, message: '请输入用户名' }]">
+        <a-form-item
+          label="用户名"
+          name="userName"
+          :rules="[{ required: true, message: '请输入用户名' }]"
+        >
           <a-input v-model:value="formState.userName" placeholder="请输入用户名" />
         </a-form-item>
 
         <!-- 个人简介 -->
         <a-form-item label="个人简介" name="userProfile">
-          <a-textarea v-model:value="formState.userProfile" placeholder="请输入个人简介" autoSize allowClear :rows="5"
-            :maxlength="200" show-count />
+          <a-textarea
+            v-model:value="formState.userProfile"
+            placeholder="请输入个人简介"
+            autoSize
+            allowClear
+            :rows="5"
+            :maxlength="200"
+            show-count
+          />
         </a-form-item>
 
         <!-- 提交按钮 -->
@@ -49,7 +71,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { message } from 'ant-design-vue'
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons-vue'
-import { getLoginUserUsingGet, editUserUsingPost } from '@/api/userController'
+import { editUserUsingPost } from '@/api/userController'
 import { uploadPictureUsingPost } from '@/api/pictureController'
 import type { FormInstance } from 'ant-design-vue'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
@@ -123,7 +145,7 @@ const handleUpload = async (options: any) => {
         picName: file.name,
       },
       {},
-      file
+      file,
     )
 
     if (res.data?.code === 0 && res.data.data?.url) {
@@ -155,7 +177,7 @@ const handleSubmit = async () => {
       id: formState.id,
       userName: formState.userName,
       userProfile: formState.userProfile,
-      userAvatar: formState.userAvatar
+      userAvatar: formState.userAvatar,
     })
 
     if (res.data?.code === 0 && res.data.data) {
@@ -165,7 +187,7 @@ const handleSubmit = async () => {
         ...loginUserStore.loginUser,
         userName: formState.userName,
         userProfile: formState.userProfile,
-        userAvatar: formState.userAvatar
+        userAvatar: formState.userAvatar,
       })
     } else {
       message.error('更新失败：' + (res.data?.message || '未知错误'))
