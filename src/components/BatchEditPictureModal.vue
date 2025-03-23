@@ -37,7 +37,7 @@
 import { defineProps, ref, withDefaults, defineExpose, reactive, onMounted } from 'vue'
 import {
   editPictureByBatchUsingPost,
-  listPictureTagCategoryUsingGet,
+  getPictureTagCategoryListUsingGet,
 } from '@/api/pictureController'
 import { message } from 'ant-design-vue'
 
@@ -81,7 +81,7 @@ const tagOptions = ref<string[]>([])
 
 // 获取标签和分类选项
 const getTagCategoryOptions = async () => {
-  const res = await listPictureTagCategoryUsingGet()
+  const res = await getPictureTagCategoryListUsingGet()
   if (res.data.code === 0 && res.data.data) {
     // 转换成下拉选项组件接受的格式
     tagOptions.value = (res.data.data.tagList ?? []).map((data: string) => {
