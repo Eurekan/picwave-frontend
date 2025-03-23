@@ -18,6 +18,12 @@
         </a-tooltip>
       </a-space>
     </a-flex>
+    <!-- 搜索表单 -->
+    <PictureSearchForm :onSearch="onSearch" />
+    <!-- 按颜色搜索 -->
+    <a-form-item label="按颜色搜索" style="margin-top: 16px">
+      <color-picker format="hex" @pureColorChange="onColorChange" />
+    </a-form-item>
     <div style="margin-bottom: 16px" />
     <!-- 图片列表 -->
     <PictureList :dataList="dataList" :loading="loading" :showOp="true" :onReload="fetchData" />
@@ -36,9 +42,12 @@
 import { onMounted, reactive, ref } from 'vue'
 import { getSpaceVoByIdUsingGet } from '@/api/spaceController'
 import { message } from 'ant-design-vue'
-import { getPictureVoListByPageUsingPost } from '@/api/pictureController'
+import { getPictureVoListByPageUsingPost, searchPictureByColorUsingPost } from '@/api/pictureController'
 import { formatSize } from '@/utils'
 import PictureList from '@/components/PictureList.vue'
+import PictureSearchForm from '@/components/PictureSearchForm.vue'
+import { ColorPicker } from 'vue3-colorpicker'
+import 'vue3-colorpicker/style.css'
 
 interface Props {
   id: string | number
@@ -62,10 +71,6 @@ const fetchSpaceDetail = async () => {
     message.error('获取空间详情失败：' + e.message)
   }
 }
-
-onMounted(() => {
-  fetchSpaceDetail()
-})
 
 // --------- 获取图片列表 --------
 
@@ -107,8 +112,38 @@ const onPageChange = (page: number, pageSize: number) => {
   fetchData()
 }
 
+// 搜索
+const onSearch = (newSearchParams: API.PictureQueryRequest) => {
+  console.log('new', newSearchParams)
+
+  Object.assign(searchParams, {
+    ...newSearchParams,
+    current: 1,
+  })
+  console.log('searchParams', searchParams)
+  fetchData()
+}
+
+// 按照颜色搜索
+const onColorChange = async (color: string) => {
+  loading.value = true
+  const res = await searchPictureByColorUsingPost({
+    picColor: color,
+    spaceId: props.id,
+  })
+  if (res.data.code === 0 && res.data.data) {
+    const data = res.data.data ?? []
+    dataList.value = data
+    total.value = data.length
+  } else {
+    message.error('获取数据失败，' + res.data.message)
+  }
+  loading.value = false
+}
+
 // 页面加载时获取数据，请求一次
 onMounted(() => {
+  fetchSpaceDetail()
   fetchData()
 })
 </script>

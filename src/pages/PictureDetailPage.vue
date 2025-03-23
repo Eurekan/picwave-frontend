@@ -5,7 +5,7 @@
       <a-col :sm="24" :md="16" :xl="18">
         <a-card title="图片预览" class="preview-card">
           <div class="preview-container">
-            <a-image :src="picture.url" :preview="false" class="preview-image" />
+            <a-image :src="picture.url" :preview="true" class="preview-image" />
           </div>
         </a-card>
       </a-col>
@@ -48,6 +48,19 @@
             <a-descriptions-item label="大小">
               {{ formatSize(picture.picSize) }}
             </a-descriptions-item>
+            <a-descriptions-item label="主色调">
+              <a-space>
+                {{ picture.picColor ?? '-' }}
+                <div
+                  v-if="picture.picColor"
+                  :style="{
+                    backgroundColor: toHexColor(picture.picColor),
+                    width: '16px',
+                    height: '16px',
+                  }"
+                />
+              </a-space>
+            </a-descriptions-item>
           </a-descriptions>
           <!-- 图片操作 -->
           <a-space wrap>
@@ -77,7 +90,7 @@ import { message } from 'ant-design-vue'
 import { DeleteOutlined, DownloadOutlined, EditOutlined } from '@ant-design/icons-vue'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { useRouter } from 'vue-router'
-import { downloadImage, formatSize } from '@/utils'
+import { downloadImage, formatSize, toHexColor } from '@/utils'
 
 interface Props {
   id: string | number
@@ -138,6 +151,13 @@ const doDelete = async () => {
 
 // 下载
 const doDownload = () => {
+  const loginUser = loginUserStore.loginUser
+  // 未登录不可下载
+  if (!loginUser.id) {
+    router.push('/user/login')
+    message.warn('请先登录')
+    return false
+  }
   downloadImage(picture.value.url)
 }
 

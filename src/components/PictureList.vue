@@ -29,15 +29,12 @@
                 </a-flex>
               </template>
             </a-card-meta>
+            <ShareModal ref="shareModalRef" :link="shareLink" />
             <template v-if="showOp" #actions>
-              <a-space @click="(e) => doEdit(picture, e)">
-                <EditOutlined />
-                编辑
-              </a-space>
-              <a-space @click="(e) => doDelete(picture, e)">
-                <DeleteOutlined />
-                删除
-              </a-space>
+              <SearchOutlined @click="(e: MouseEvent) => doSearch(picture, e)" />
+              <ShareAltOutlined @click="(e: MouseEvent) => doShare(picture, e)" />
+              <EditOutlined @click="(e: MouseEvent) => doEdit(picture, e)" />
+              <DeleteOutlined @click="(e: MouseEvent) => doDelete(picture, e)" />
             </template>
           </a-card>
         </a-list-item>
@@ -48,9 +45,16 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons-vue'
-import { deletePictureUsingPost } from '@/api/pictureController.ts'
+import {
+  SearchOutlined,
+  ShareAltOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
+import { deletePictureUsingPost } from '@/api/pictureController'
+import { ref } from 'vue'
+import ShareModal from '@/components/ShareModal.vue'
 
 interface Props {
   dataList?: API.PictureVO[]
@@ -73,8 +77,28 @@ const doClickPicture = (picture: API.PictureVO) => {
   })
 }
 
+// 搜索
+const doSearch = (picture: API.PictureVO, e: MouseEvent) => {
+  e.stopPropagation()
+  window.open(`/search_picture?pictureId=${picture.id}`)
+}
+
+// 分享弹窗引用
+const shareModalRef = ref()
+// 分享链接
+const shareLink = ref<string>()
+
+// 分享
+const doShare = (picture: API.PictureVO, e: Event) => {
+  e.stopPropagation()
+  shareLink.value = `${window.location.protocol}//${window.location.host}/picture/${picture.id}`
+  if (shareModalRef.value) {
+    shareModalRef.value.openModal()
+  }
+}
+
 // 编辑
-const doEdit = (picture, e) => {
+const doEdit = (picture: API.PictureVO, e: MouseEvent) => {
   // 阻止冒泡
   e.stopPropagation()
   // 跳转时一定要携带 spaceId
@@ -88,7 +112,7 @@ const doEdit = (picture, e) => {
 }
 
 // 删除数据
-const doDelete = async (picture, e) => {
+const doDelete = async (picture: API.PictureVO, e: MouseEvent) => {
   // 阻止冒泡
   e.stopPropagation()
   const id = picture.id
