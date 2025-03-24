@@ -112,7 +112,6 @@ const selectedTagList = ref<boolean[]>([])
 
 /**
  * 获取标签和分类选项
- * @param values
  */
 const getTagCategoryOptions = async () => {
   const res = await getPictureTagCategoryListUsingGet()
@@ -128,6 +127,12 @@ onMounted(() => {
   fetchData()
   getTagCategoryOptions()
 })
+
+/*onMounted(() => {
+  const script = document.createElement('script');
+  script.src = 'https://fastly.jsdelivr.net/npm/live2d-widgets@0/autoload.js';
+  document.head.appendChild(script);
+});*/
 </script>
 
 <style scoped>

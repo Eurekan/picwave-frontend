@@ -10,9 +10,9 @@
             :before-upload="beforeUpload" :customRequest="handleUpload">
             <img v-if="formState.userAvatar" :src="formState.userAvatar" alt="头像" class="avatar-image" />
             <div v-else>
-              <loading-outlined v-if="uploading" />
-              <plus-outlined v-else />
-              <div class="ant-upload-text">上传</div>
+              <loading-outlined v-if="uploading" style="margin-left: 52px;" />
+              <FileImageOutlined v-else style="margin-left: 36px; font-size: xxx-large;" />
+              <div class="ant-upload-text" style="margin-left: 32px;">点击上传</div>
             </div>
           </a-upload>
         </div>
@@ -48,7 +48,7 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted } from 'vue'
 import { message } from 'ant-design-vue'
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons-vue'
+import { FileImageOutlined, LoadingOutlined } from '@ant-design/icons-vue'
 import { editUserUsingPost } from '@/api/userController'
 import { uploadPictureUsingPost } from '@/api/pictureController'
 import type { FormInstance } from 'ant-design-vue'
