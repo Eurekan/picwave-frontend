@@ -41,7 +41,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { deleteUserUsingPost, listUserVoByPageUsingPost } from '@/api/userController'
+import { deleteUserUsingPost, getUserVoListByPageUsingPost } from '@/api/userController'
 import { reactive, ref, onMounted, computed } from 'vue'
 import { message } from 'ant-design-vue'
 import dayjs from 'dayjs'
@@ -112,7 +112,7 @@ const doTableChange = (page: any) => {
 
 // 获取数据
 const fetchData = async () => {
-  const res = await listUserVoByPageUsingPost({
+  const res = await getUserVoListByPageUsingPost({
     ...searchParams,
   })
   if (res.data.data) {
