@@ -4,6 +4,12 @@
       <h2>空间管理</h2>
       <a-space>
         <a-button type="primary" href="/add_space" target="_blank">+ 创建空间</a-button>
+        <a-button type="primary" ghost href="/space_analyze?queryPublic=1" target="_blank">
+          分析公共图库
+        </a-button>
+        <a-button type="primary" ghost href="/space_analyze?queryAll=1" target="_blank">
+          分析全空间
+        </a-button>
       </a-space>
     </a-flex>
     <div style="margin-bottom: 16px" />
@@ -52,6 +58,9 @@
         </template>
         <template v-else-if="column.key === 'action'">
           <a-space wrap>
+            <a-button type="link" :href="`/space_analyze?spaceId=${record.id}`" target="_blank">
+              分析
+            </a-button>
             <a-button type="link" :href="`/add_space?id=${record.id}`" target="_blank">
               编辑
             </a-button>
@@ -64,11 +73,11 @@
 </template>
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref } from 'vue'
+import { deleteSpaceUsingPost, getSpaceListByPageUsingPost } from '@/api/spaceController'
 import { message } from 'ant-design-vue'
 import dayjs from 'dayjs'
-import { formatSize } from '@/utils'
 import { SPACE_LEVEL_MAP, SPACE_LEVEL_OPTIONS } from '@/constants/space'
-import { deleteSpaceUsingPost, getSpaceListByPageUsingPost } from '@/api/spaceController'
+import { formatSize } from '@/utils'
 
 const columns = [
   {
@@ -132,11 +141,6 @@ const fetchData = async () => {
   }
 }
 
-// 页面加载时获取数据，请求一次
-onMounted(() => {
-  fetchData()
-})
-
 // 分页参数
 const pagination = computed(() => {
   return {
@@ -144,7 +148,7 @@ const pagination = computed(() => {
     pageSize: searchParams.pageSize,
     total: total.value,
     showSizeChanger: true,
-    showTotal: (total) => `共 ${total} 条`,
+    showTotal: (total: number) => `共 ${total} 条`,
   }
 })
 
@@ -167,7 +171,7 @@ const doDelete = async (id: string) => {
   if (!id) {
     return
   }
-  const res = await deleteSpaceUsingPost({ id })
+  const res = await deleteSpaceUsingPost({ id: Number(id) })
   if (res.data.code === 0) {
     message.success('删除成功')
     // 刷新数据
@@ -176,4 +180,9 @@ const doDelete = async (id: string) => {
     message.error('删除失败')
   }
 }
+
+// 页面加载时获取数据，请求一次
+onMounted(() => {
+  fetchData()
+})
 </script>
