@@ -30,6 +30,10 @@ myAxios.interceptors.response.use(
     const { data } = response
     // 未登录
     if (data.code === 40100) {
+      // 如果当前页面是图片详情页，则不跳转
+      // if (window.location.pathname.startsWith('/picture/')) {
+      //   return response // 允许继续访问
+      // }
       // 不是获取用户信息的请求，并且用户目前不是已经在用户登录页面，则跳转到登录页面
       if (
         !response.request.responseURL.includes('user/get/login') &&
